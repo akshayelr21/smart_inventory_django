@@ -1,0 +1,364 @@
+/* Smart Inventory — clean, responsive admin interface */
+:root {
+  --ink: #172b4d;
+  --muted: #75839a;
+  --brand: #315ee7;
+  --brand-dark: #244bc2;
+  --line: #e7ecf3;
+  --surface: #ffffff;
+  --canvas: #f4f7fb;
+  --radius: 16px;
+  --shadow: 0 8px 28px rgba(31, 48, 78, 0.07);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--brand);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--brand-dark);
+}
+
+/* Navigation */
+.app-navbar {
+  min-height: 72px;
+  background: #14233d;
+  box-shadow: 0 3px 16px rgba(15, 30, 55, 0.14);
+}
+
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff !important;
+  font-size: 1rem;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+
+.brand-mark {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 11px;
+  background: linear-gradient(145deg, #6788ff, #315ee7);
+  color: #fff;
+  font-size: 1rem;
+  box-shadow: inset 0 1px 0 #ffffff55;
+}
+
+.brand-light {
+  margin-left: 4px;
+  color: #b9c7df;
+  font-weight: 500;
+}
+
+.app-navbar .navbar-nav {
+  gap: 4px;
+}
+
+.app-navbar .nav-link {
+  padding: 0.55rem 0.8rem !important;
+  border-radius: 9px;
+  color: #c1cce0;
+  font-size: 0.9rem;
+  font-weight: 550;
+  transition: 0.18s ease;
+}
+
+.app-navbar .nav-link:hover,
+.app-navbar .nav-link:focus {
+  background: #ffffff12;
+  color: #fff;
+}
+
+.user-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid #ffffff20;
+  border-radius: 99px;
+  color: #e0e8f6 !important;
+  font-size: 0.84rem;
+}
+
+.app-navbar .btn-outline-light {
+  padding: 0.48rem 0.85rem;
+  border-color: #ffffff38;
+  border-radius: 9px;
+  font-weight: 600;
+}
+
+.app-navbar .btn-outline-light:hover {
+  color: #14233d;
+}
+
+/* Page layout and typography */
+.app-main {
+  max-width: 1240px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+
+h2 {
+  margin-bottom: 0.25rem;
+  font-size: clamp(1.55rem, 2vw, 1.9rem);
+}
+
+h3 {
+  font-size: 1.7rem;
+}
+
+.text-muted {
+  color: var(--muted) !important;
+}
+
+/* Cards */
+.card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.card-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.card-body {
+  padding: 1.25rem;
+}
+
+.stat-card {
+  position: relative;
+  min-height: 128px;
+}
+
+.stat-card .card-body {
+  padding: 1.35rem 1.4rem;
+}
+
+.stat-card .text-muted {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.stat-card h3 {
+  margin: 9px 0 0;
+  font-size: clamp(1.45rem, 2vw, 1.9rem);
+  font-weight: 750;
+  letter-spacing: -0.04em;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.62rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 650;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  border-color: var(--brand);
+  background: var(--brand);
+  box-shadow: 0 4px 10px #315ee72b;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  border-color: var(--brand-dark);
+  background: var(--brand-dark);
+}
+
+.btn-outline-primary {
+  border-color: #cbd6f5;
+  color: var(--brand);
+}
+
+.btn-outline-primary:hover {
+  border-color: var(--brand);
+  background: var(--brand);
+}
+
+.btn-danger {
+  background: #d94655;
+}
+
+/* Forms */
+.form-control,
+.form-select {
+  min-height: 44px;
+  border: 1px solid #dce3ed;
+  border-radius: 10px;
+  background-color: #fff;
+  color: var(--ink);
+  font-size: 0.94rem;
+}
+
+.form-control::placeholder {
+  color: #a0aabc;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #8098f2;
+  box-shadow: 0 0 0 0.22rem #315ee719;
+}
+
+.form-label {
+  margin-bottom: 0.45rem;
+  color: #394b65;
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+
+.form-card {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.auth-card {
+  max-width: 460px;
+  margin-top: 5vh;
+}
+
+.auth-card .card-body {
+  padding: clamp(1.5rem, 5vw, 2.25rem) !important;
+}
+
+.auth-card h2 {
+  font-size: 1.7rem;
+}
+
+/* Tables */
+.table-responsive {
+  border-radius: var(--radius);
+}
+
+.table {
+  color: #34445c;
+  vertical-align: middle;
+}
+
+.table thead th {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--line);
+  background: #f8faff;
+  color: #708099;
+  font-size: 0.74rem;
+  font-weight: 750;
+  letter-spacing: 0.065em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.table tbody td {
+  padding: 0.9rem 1rem;
+  border-color: #edf1f6;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.table-hover tbody tr:hover {
+  background: #f8faff;
+}
+
+/* Alerts and badges */
+.badge {
+  padding: 0.45em 0.7em;
+  border-radius: 7px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.bg-danger {
+  background-color: #d94d5c !important;
+}
+
+.alert {
+  border: 0;
+  border-radius: 12px;
+  box-shadow: 0 5px 16px rgba(31, 48, 78, 0.05);
+}
+
+.border-bottom {
+  border-color: var(--line) !important;
+}
+
+/* Responsive layout */
+@media (max-width: 991.98px) {
+  .app-navbar {
+    padding: 0.6rem 0;
+  }
+
+  .app-navbar .navbar-nav {
+    padding: 0.7rem 0;
+  }
+
+  .app-navbar .navbar-nav .nav-link {
+    padding: 0.65rem 0.75rem !important;
+  }
+
+  .app-navbar .navbar-collapse form {
+    margin-top: 0.65rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .app-main {
+    padding-top: 1.25rem !important;
+  }
+
+  .stat-card {
+    min-height: 108px;
+  }
+
+  .stat-card .card-body {
+    padding: 1rem;
+  }
+
+  .table thead th,
+  .table tbody td {
+    padding: 0.75rem 0.8rem;
+  }
+
+  .d-flex.justify-content-between > .btn {
+    flex-shrink: 0;
+  }
+}

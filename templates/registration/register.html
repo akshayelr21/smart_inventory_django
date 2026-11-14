@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block title %}Register{% endblock %}
+{% block content %}<div class="auth-card card shadow-sm mx-auto"><div class="card-body p-4">
+<h2 class="text-center">Create Staff Account</h2><p class="text-muted text-center">Register to use the inventory system</p>
+<form method="post">{% csrf_token %}
+{% for field in form %}<div class="mb-3"><label class="form-label">{{ field.label }}</label>{{ field }}{% for e in field.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>{% endfor %}
+<button class="btn btn-primary w-100">Register</button></form>
+<p class="text-center mt-3">Already registered? <a href="{% url 'login' %}">Login</a></p>
+</div></div>{% endblock %}

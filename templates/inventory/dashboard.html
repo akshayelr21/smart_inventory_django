@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4"><div><h2>Dashboard</h2><p class="text-muted mb-0">Inventory and order overview</p></div><a class="btn btn-primary" href="{% url 'product_add' %}">+ Add Product</a></div>
+<div class="row g-3 mb-4">
+{% for label,value in cards %}{% endfor %}
+<div class="col-md-3"><div class="card stat-card"><div class="card-body"><div class="text-muted">Products</div><h3>{{ product_count }}</h3></div></div></div>
+<div class="col-md-3"><div class="card stat-card"><div class="card-body"><div class="text-muted">Customers</div><h3>{{ customer_count }}</h3></div></div></div>
+<div class="col-md-3"><div class="card stat-card"><div class="card-body"><div class="text-muted">Orders</div><h3>{{ order_count }}</h3></div></div></div>
+<div class="col-md-3"><div class="card stat-card"><div class="card-body"><div class="text-muted">Total Sales</div><h3>₹{{ sales_total }}</h3></div></div></div>
+</div>
+<div class="row g-3"><div class="col-lg-6"><div class="card"><div class="card-header">Low Stock Alerts</div><div class="card-body">
+{% for p in low_stock %}<div class="d-flex justify-content-between border-bottom py-2"><span>{{ p.name }} <small class="text-muted">({{ p.sku }})</small></span><span class="badge bg-danger">{{ p.quantity }} left</span></div>{% empty %}<p class="text-muted mb-0">No low-stock products.</p>{% endfor %}
+</div></div></div><div class="col-lg-6"><div class="card"><div class="card-header">Recent Orders</div><div class="card-body">
+{% for o in recent_orders %}<div class="d-flex justify-content-between border-bottom py-2"><span>Order #{{ o.id }} — {{ o.customer.name }}</span><strong>₹{{ o.total }}</strong></div>{% empty %}<p class="text-muted mb-0">No orders yet.</p>{% endfor %}
+</div></div></div></div>
+{% endblock %}
