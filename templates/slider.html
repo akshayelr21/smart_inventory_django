@@ -1,0 +1,379 @@
+{# Reusable side navigation include. Add `{% include '_side_slider.html' %}` to your base template. #}
+<aside class="side-slider" id="side-slider" aria-label="Main navigation">
+  <button class="side-slider__toggle" type="button" aria-label="Collapse navigation" aria-expanded="true"
+    aria-controls="side-slider">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M15 18 9 12l6-6" />
+    </svg>
+  </button>
+
+  <a class="side-slider__brand" href="http://127.0.0.1:8000/" aria-label="Dashboard">
+    <span class="side-slider__brand-mark" aria-hidden="true">N</span>
+    <span class="side-slider__brand-name">NORTHSTAR</span>
+  </a>
+
+  <span class="side-slider__eyebrow">WORKSPACE</span>
+  <nav class="side-slider__nav">
+    <a class="side-slider__link is-active" href="http://127.0.0.1:8000/" aria-current="page" title="Dashboard">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+        <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+        <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+        <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+      </svg>
+      <span>Dashboard</span><span class="side-slider__active-dot" aria-hidden="true"></span>
+    </a>
+    <a class="side-slider__link" href="http://127.0.0.1:8000/products/" title="Products">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m12 3 8.5 4.5v9L12 21l-8.5-4.5v-9L12 3Z" />
+        <path d="m3.8 7.7 8.2 4.5 8.2-4.5M12 12.2V21M7.5 5.4l8.4 4.7" />
+      </svg><span>Products</span>
+    </a>
+    <a class="side-slider__link" href="http://127.0.0.1:8000/inventory/" title="Inventory">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z" />
+        <path d="M4.2 7.6 12 12l7.8-4.4M12 12v9M8 5.3l8 4.5" />
+      </svg><span>Inventory</span>
+    </a>
+    <a class="side-slider__link" href="http://127.0.0.1:8000/customers/" title="Customers">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="9" cy="8" r="3.5" />
+        <path d="M2.8 20a6.2 6.2 0 0 1 12.4 0M16 5a3.5 3.5 0 0 1 0 6.8M17.2 14a5.6 5.6 0 0 1 4 6" />
+      </svg><span>Customers</span>
+    </a>
+    <a class="side-slider__link" href="http://127.0.0.1:8000/orders/" title="Orders">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 4h14v17l-2.3-1.5L14.5 21l-2.5-1.5L9.5 21 7.3 19.5 5 21V4Z" />
+        <path d="M8.5 9h7M8.5 13h7M8.5 17h3" />
+      </svg><span>Orders</span>
+    </a>
+    <a class="side-slider__link" href="http://127.0.0.1:8000/reports/" title="Reports">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 20V11M10 20V5M16 20v-7M22 20H2" />
+      </svg><span>Reports</span>
+    </a>
+  </nav>
+
+  <div class="side-slider__footer"><span class="side-slider__status" aria-hidden="true"></span><span>All systems
+      normal</span></div>
+</aside>
+
+<style>
+  .side-slider {
+    --ss-bg: #111827;
+    --ss-text: #aeb9cb;
+    --ss-muted: #738198;
+    --ss-accent: #8b9cff;
+    box-sizing: border-box;
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    width: 256px;
+    padding: 28px 16px 18px;
+    background: var(--ss-bg);
+    color: var(--ss-text);
+    font: 14px/1.4 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    transition: width .25s ease, transform .25s ease;
+  }
+
+  .side-slider *,
+  .side-slider *::before,
+  .side-slider *::after {
+    box-sizing: border-box;
+  }
+
+  .side-slider__toggle {
+    position: absolute;
+    top: 32px;
+    right: -13px;
+    display: grid;
+    place-items: center;
+    width: 27px;
+    height: 27px;
+    padding: 0;
+    border: 1px solid #303b4f;
+    border-radius: 50%;
+    background: #1b2535;
+    color: #dbe3f1;
+    cursor: pointer;
+  }
+
+  .side-slider__toggle svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform .25s ease;
+  }
+
+  .side-slider__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 34px;
+    margin: 0 0 43px 6px;
+    color: #f3f5fa;
+    text-decoration: none;
+  }
+
+  .side-slider__brand-mark {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: #7c8df4;
+    color: white;
+    font-size: 16px;
+    font-weight: 750;
+  }
+
+  .side-slider__brand-name {
+    overflow: hidden;
+    color: #f3f5fa;
+    font-size: 12px;
+    font-weight: 750;
+    letter-spacing: .16em;
+    white-space: nowrap;
+  }
+
+  .side-slider__eyebrow {
+    margin: 0 0 12px 12px;
+    color: var(--ss-muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .16em;
+  }
+
+  .side-slider__nav {
+    display: grid;
+    gap: 5px;
+  }
+
+  .side-slider__link {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-height: 46px;
+    padding: 0 12px;
+    border-radius: 9px;
+    color: var(--ss-text);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color .18s ease, background .18s ease;
+  }
+
+  .side-slider__link:hover {
+    background: #1c2739;
+    color: #fff;
+  }
+
+  .side-slider__link.is-active {
+    background: #202b40;
+    color: #fff;
+  }
+
+  .side-slider__link>svg {
+    flex: 0 0 19px;
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.65;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .side-slider__link>span:not(.side-slider__active-dot) {
+    overflow: hidden;
+  }
+
+  .side-slider__active-dot {
+    position: absolute;
+    right: 12px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--ss-accent);
+  }
+
+  .side-slider__footer {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: auto;
+    padding: 14px 9px 2px;
+    border-top: 1px solid #263144;
+    color: var(--ss-muted);
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .side-slider__status {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #5fd6a0;
+    box-shadow: 0 0 9px #5fd68866;
+  }
+
+  .side-slider.is-collapsed {
+    width: 76px;
+    padding-inline: 12px;
+  }
+
+  .side-slider.is-collapsed .side-slider__brand {
+    margin-left: 10px;
+  }
+
+  .side-slider.is-collapsed .side-slider__brand-name,
+  .side-slider.is-collapsed .side-slider__eyebrow,
+  .side-slider.is-collapsed .side-slider__link>span:not(.side-slider__active-dot),
+  .side-slider.is-collapsed .side-slider__footer>span:last-child {
+    display: none;
+  }
+
+  .side-slider.is-collapsed .side-slider__link {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .side-slider.is-collapsed .side-slider__active-dot {
+    right: 7px;
+  }
+
+  .side-slider.is-collapsed .side-slider__footer {
+    justify-content: center;
+    padding-inline: 0;
+  }
+
+  .side-slider.is-collapsed .side-slider__toggle svg {
+    transform: rotate(180deg);
+  }
+
+  @media (max-width: 640px) {
+    .side-slider {
+      width: 256px;
+      transform: translateX(-100%);
+    }
+
+    .side-slider.is-open {
+      transform: translateX(0);
+    }
+
+    .side-slider__toggle {
+      top: 22px;
+      right: -41px;
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+    }
+
+    .side-slider.is-open .side-slider__toggle {
+      right: 12px;
+    }
+
+    .side-slider.is-collapsed {
+      width: 256px;
+      padding-inline: 16px;
+    }
+
+    .side-slider.is-collapsed .side-slider__brand {
+      margin-left: 6px;
+    }
+
+    .side-slider.is-collapsed .side-slider__brand-name,
+    .side-slider.is-collapsed .side-slider__eyebrow,
+    .side-slider.is-collapsed .side-slider__link>span:not(.side-slider__active-dot),
+    .side-slider.is-collapsed .side-slider__footer>span:last-child {
+      display: revert;
+    }
+
+    .side-slider.is-collapsed .side-slider__link {
+      justify-content: flex-start;
+      padding-inline: 12px;
+    }
+
+    .side-slider.is-collapsed .side-slider__active-dot {
+      right: 12px;
+    }
+
+    .side-slider.is-collapsed .side-slider__footer {
+      justify-content: flex-start;
+      padding-inline: 9px;
+    }
+
+    .side-slider.is-open .side-slider__toggle svg {
+      transform: rotate(180deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+
+    .side-slider,
+    .side-slider__toggle svg,
+    .side-slider__link {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  (() => {
+    const sidebar = document.getElementById("side-slider");
+    if (!sidebar || sidebar.dataset.sliderReady) return;
+
+    sidebar.dataset.sliderReady = "true";
+    const toggle = sidebar.querySelector(".side-slider__toggle");
+    const mobile = window.matchMedia("(max-width: 640px)");
+
+    const syncToggle = () => {
+      const open = mobile.matches
+        ? sidebar.classList.contains("is-open")
+        : !sidebar.classList.contains("is-collapsed");
+
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Collapse navigation" : "Expand navigation");
+    };
+
+    toggle.addEventListener("click", () => {
+      if (mobile.matches) {
+        sidebar.classList.toggle("is-open");
+      } else {
+        sidebar.classList.toggle("is-collapsed");
+      }
+
+      syncToggle();
+    });
+
+    mobile.addEventListener("change", () => {
+      sidebar.classList.remove("is-open");
+      sidebar.classList.remove("is-collapsed");
+      syncToggle();
+    });
+
+    const links = [...sidebar.querySelectorAll(".side-slider__link")];
+    const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+    const current = links.find(link =>
+      new URL(link.href).pathname.replace(/\/$/, "") === currentPath
+    );
+
+    if (current) {
+      links.forEach(link => {
+        link.classList.remove("is-active");
+        link.removeAttribute("aria-current");
+      });
+
+      current.classList.add("is-active");
+      current.setAttribute("aria-current", "page");
+    }
+
+    syncToggle();
+  })();
+</script>

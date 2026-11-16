@@ -1,33 +1,423 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{% block title %}Smart Inventory{% endblock %}</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="{% load static %}{% static 'css/style.css' %}" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Smart Inventory{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <style>
+        :root {
+            --sidebar-width: 256px;
+            --sidebar-collapsed-width: 76px;
+            --sidebar-bg: #111827;
+            --sidebar-text: #aeb9cb;
+            --sidebar-muted: #738198;
+            --sidebar-accent: #8b9cff;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: #f5f7fb;
+        }
+
+        .side-slider {
+            position: fixed;
+            inset: 0 auto 0 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            width: var(--sidebar-width);
+            padding: 28px 16px 18px;
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            font: 14px/1.4 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+            transition: width .25s ease, transform .25s ease;
+        }
+
+        .side-slider *,
+        .side-slider *::before,
+        .side-slider *::after {
+            box-sizing: border-box;
+        }
+
+        .side-slider__toggle {
+            position: absolute;
+            top: 28px;
+            right: -14px;
+            z-index: 1001;
+            display: grid;
+            place-items: center;
+            width: 29px;
+            height: 29px;
+            padding: 0;
+            border: 1px solid #303b4f;
+            border-radius: 50%;
+            background: #1b2535;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .side-slider__brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 34px;
+            margin: 0 0 40px 6px;
+            color: #f3f5fa;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .side-slider__brand-mark {
+            display: grid;
+            flex: 0 0 32px;
+            place-items: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: #7c8df4;
+            color: white;
+            font-weight: 750;
+        }
+
+        .side-slider__brand-name {
+            font-size: 12px;
+            font-weight: 750;
+            letter-spacing: .16em;
+        }
+
+        .side-slider__eyebrow {
+            margin: 0 0 12px 12px;
+            color: var(--sidebar-muted);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .16em;
+        }
+
+        .side-slider__nav {
+            display: grid;
+            gap: 5px;
+        }
+
+        .side-slider__link {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            min-height: 46px;
+            padding: 0 12px;
+            border-radius: 9px;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .side-slider__link:hover,
+        .side-slider__link.is-active {
+            background: #202b40;
+            color: #fff;
+        }
+
+        .side-slider__icon {
+            flex: 0 0 19px;
+            width: 19px;
+            height: 19px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.7;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .side-slider__active-dot {
+            position: absolute;
+            right: 12px;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--sidebar-accent);
+        }
+
+        .side-slider__footer {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-top: auto;
+            padding: 14px 9px 2px;
+            border-top: 1px solid #263144;
+            color: var(--sidebar-muted);
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .side-slider__status {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #5fd6a0;
+        }
+
+        .app-main {
+            min-width: 0;
+            min-height: 100vh;
+            margin-left: var(--sidebar-width);
+            padding: 24px;
+            transition: margin-left .25s ease;
+        }
+
+        body.sidebar-collapsed .side-slider {
+            width: var(--sidebar-collapsed-width);
+            padding-right: 12px;
+            padding-left: 12px;
+        }
+
+        body.sidebar-collapsed .app-main {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+
+        body.sidebar-collapsed .side-slider__brand {
+            margin-left: 10px;
+        }
+
+        body.sidebar-collapsed .side-slider__brand-name,
+        body.sidebar-collapsed .side-slider__eyebrow,
+        body.sidebar-collapsed .side-slider__link-label,
+        body.sidebar-collapsed .side-slider__footer-label {
+            display: none;
+        }
+
+        body.sidebar-collapsed .side-slider__link {
+            justify-content: center;
+            padding-right: 0;
+            padding-left: 0;
+        }
+
+        body.sidebar-collapsed .side-slider__active-dot {
+            right: 7px;
+        }
+
+        body.sidebar-collapsed .side-slider__footer {
+            justify-content: center;
+            padding-right: 0;
+            padding-left: 0;
+        }
+
+        @media (max-width: 640px) {
+            .side-slider {
+                width: var(--sidebar-width);
+                transform: translateX(-100%);
+            }
+
+            .side-slider.is-open {
+                transform: translateX(0);
+            }
+
+            .side-slider__toggle {
+                top: 20px;
+                right: -44px;
+                width: 36px;
+                height: 36px;
+                border-radius: 8px;
+            }
+
+            .side-slider.is-open .side-slider__toggle {
+                right: 12px;
+            }
+
+            .app-main,
+            body.sidebar-collapsed .app-main {
+                margin-left: 0;
+                padding: 20px 16px;
+            }
+
+            body.sidebar-collapsed .side-slider {
+                width: var(--sidebar-width);
+                padding: 28px 16px 18px;
+            }
+
+            body.sidebar-collapsed .side-slider__brand {
+                margin-left: 6px;
+            }
+
+            body.sidebar-collapsed .side-slider__brand-name,
+            body.sidebar-collapsed .side-slider__eyebrow,
+            body.sidebar-collapsed .side-slider__link-label,
+            body.sidebar-collapsed .side-slider__footer-label {
+                display: initial;
+            }
+
+            body.sidebar-collapsed .side-slider__link {
+                justify-content: flex-start;
+                padding-right: 12px;
+                padding-left: 12px;
+            }
+
+            body.sidebar-collapsed .side-slider__active-dot {
+                right: 12px;
+            }
+
+            body.sidebar-collapsed .side-slider__footer {
+                justify-content: flex-start;
+                padding-right: 9px;
+                padding-left: 9px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .side-slider,
+            .app-main {
+                transition: none;
+            }
+        }
+    </style>
 </head>
+
 <body>
-{% if request.user.is_authenticated %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-<div class="container-fluid">
-<a class="navbar-brand" href="{% url 'dashboard' %}">Smart Inventory</a>
-<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
-<div class="collapse navbar-collapse" id="nav">
-<ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a></li>
-<li class="nav-item"><a class="nav-link" href="{% url 'products' %}">Products</a></li>
-<li class="nav-item"><a class="nav-link" href="{% url 'inventory' %}">Inventory</a></li>
-<li class="nav-item"><a class="nav-link" href="{% url 'customers' %}">Customers</a></li>
-<li class="nav-item"><a class="nav-link" href="{% url 'orders' %}">Orders</a></li>
-<li class="nav-item"><a class="nav-link" href="{% url 'reports' %}">Reports</a></li>
-</ul>
-<span class="navbar-text text-white me-3">{{ request.user.username }}</span>
-<form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn btn-outline-light btn-sm">Logout</button></form>
-</div></div></nav>
-{% endif %}
-<main class="container py-4">
-{% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show">{{ message }}<button class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}
-{% block content %}{% endblock %}
-</main>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body></html>
+    {% if request.user.is_authenticated %}
+        <aside class="side-slider" id="side-slider" aria-label="Main navigation">
+            <button
+                class="side-slider__toggle"
+                type="button"
+                aria-label="Collapse navigation"
+                aria-expanded="true"
+                aria-controls="side-slider"
+            >‹</button>
+
+            <a class="side-slider__brand" href="{% url 'dashboard' %}">
+                <span class="side-slider__brand-mark" aria-hidden="true">S</span>
+                <span class="side-slider__brand-name">SMART INVENTORY</span>
+            </a>
+
+            <span class="side-slider__eyebrow">WORKSPACE</span>
+
+            <nav class="side-slider__nav">
+                <a class="side-slider__link" href="{% url 'dashboard' %}" title="Dashboard">
+                    <svg class="side-slider__icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/>
+                        <rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/>
+                        <rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/>
+                        <rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>
+                    </svg>
+                    <span class="side-slider__link-label">Dashboard</span>
+                    <span class="side-slider__active-dot" aria-hidden="true"></span>
+                </a>
+
+                <a class="side-slider__link" href="{% url 'products' %}" title="Products">
+                    <svg class="side-slider__icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m12 3 8.5 4.5v9L12 21l-8.5-4.5v-9L12 3Z"/>
+                        <path d="m3.8 7.7 8.2 4.5 8.2-4.5M12 12.2V21"/>
+                    </svg>
+                    <span class="side-slider__link-label">Products</span>
+                </a>
+
+                <a class="side-slider__link" href="{% url 'inventory' %}" title="Inventory">
+                    <svg class="side-slider__icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z"/>
+                        <path d="M4.2 7.6 12 12l7.8-4.4M12 12v9"/>
+                    </svg>
+                    <span class="side-slider__link-label">Inventory</span>
+                </a>
+
+                <a class="side-slider__link" href="{% url 'customers' %}" title="Customers">
+                    <svg class="side-slider__icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="9" cy="8" r="3.5"/>
+                        <path d="M2.8 20a6.2 6.2 0 0 1 12.4 0M16 5a3.5 3.5 0 0 1 0 6.8M17.2 14a5.6 5.6 0 0 1 4 6"/>
+                    </svg>
+                    <span class="side-slider__link-label">Customers</span>
+                </a>
+
+                <a class="side-slider__link" href="{% url 'orders' %}" title="Orders">
+                    <svg class="side-slider__icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M5 4h14v17l-2.3-1.5L14.5 21 12 19.5 9.5 21l-2.2-1.5L5 21V4Z"/>
+                        <path d="M8.5 9h7M8.5 13h7M8.5 17h3"/>
+                    </svg>
+                    <span class="side-slider__link-label">Orders</span>
+                </a>
+
+                <a class="side-slider__link" href="{% url 'reports' %}" title="Reports">
+                    <svg class="side-slider__icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 20V11M10 20V5M16 20v-7M22 20H2"/>
+                    </svg>
+                    <span class="side-slider__link-label">Reports</span>
+                </a>
+            </nav>
+
+            <div class="side-slider__footer">
+                <span class="side-slider__status" aria-hidden="true"></span>
+                <span class="side-slider__footer-label">{{ request.user.username }}</span>
+                <form method="post" action="{% url 'logout' %}" class="ms-auto">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-outline-light" type="submit">Logout</button>
+                </form>
+            </div>
+        </aside>
+    {% endif %}
+
+    <main class="app-main">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        (() => {
+            const sidebar = document.getElementById("side-slider");
+            if (!sidebar) return;
+
+            const toggle = sidebar.querySelector(".side-slider__toggle");
+            const mobile = window.matchMedia("(max-width: 640px)");
+
+            function updateToggle() {
+                const isOpen = mobile.matches
+                    ? sidebar.classList.contains("is-open")
+                    : !document.body.classList.contains("sidebar-collapsed");
+
+                toggle.setAttribute("aria-expanded", String(isOpen));
+                toggle.setAttribute(
+                    "aria-label",
+                    isOpen ? "Collapse navigation" : "Expand navigation"
+                );
+                toggle.textContent = isOpen ? "‹" : "›";
+            }
+
+            toggle.addEventListener("click", () => {
+                if (mobile.matches) {
+                    sidebar.classList.toggle("is-open");
+                } else {
+                    document.body.classList.toggle("sidebar-collapsed");
+                }
+                updateToggle();
+            });
+
+            mobile.addEventListener("change", () => {
+                sidebar.classList.remove("is-open");
+                document.body.classList.remove("sidebar-collapsed");
+                updateToggle();
+            });
+
+            const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
+            sidebar.querySelectorAll(".side-slider__link").forEach(link => {
+                const linkPath = new URL(link.href).pathname.replace(/\/$/, "") || "/";
+                if (linkPath === currentPath) {
+                    link.classList.add("is-active");
+                    link.setAttribute("aria-current", "page");
+                }
+            });
+
+            updateToggle();
+        })();
+    </script>
+</body>
+</html>

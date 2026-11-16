@@ -1,6 +1,31 @@
 {% extends "base.html" %}{% block title %}Customers{% endblock %}{% block content %}
-<div class="d-flex justify-content-between mb-3"><h2>Customers</h2><a class="btn btn-primary" href="{% url 'customer_add' %}">Add Customer</a></div>
-<form class="row g-2 mb-3"><div class="col-md-5"><input class="form-control" name="q" value="{{ q }}" placeholder="Search customer"></div><div class="col-auto"><button class="btn btn-outline-primary">Search</button></div></form>
-<div class="table-responsive card"><table class="table mb-0"><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Action</th></tr></thead><tbody>
-{% for c in customers %}<tr><td>{{ c.name }}</td><td>{{ c.email|default:"—" }}</td><td>{{ c.phone|default:"—" }}</td><td><a href="{% url 'customer_edit' c.pk %}">Edit</a> · <a class="text-danger" href="{% url 'customer_delete' c.pk %}">Delete</a></td></tr>{% empty %}<tr><td colspan="4" class="text-center p-4">No customers yet.</td></tr>{% endfor %}
-</tbody></table></div>{% endblock %}
+<div class="d-flex justify-content-between mb-3">
+    <h2>Customers</h2><a class="btn btn-primary" href="{% url 'customer_add' %}">Add Customer</a>
+</div>
+<form class="row g-2 mb-3">
+    <div class="col-md-5"><input class="form-control" name="q" value="{{ q }}" placeholder="Search customer"></div>
+    <div class="col-auto"><button class="btn btn-outline-primary">Search</button></div>
+</form>
+<div class="table-responsive card">
+    <table class="table mb-0">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in customers %}<tr>
+                <td>{{ c.name }}</td>
+                <td>{{ c.email|default:"—" }}</td>
+                <td>{{ c.phone|default:"—" }}</td>
+                <td><a href="{% url 'customer_edit' c.pk %}">Edit</a> · <a class="text-danger"
+                        href="{% url 'customer_delete' c.pk %}">Delete</a></td>
+            </tr>{% empty %}<tr>
+                <td colspan="4" class="text-center p-4">No customers yet.</td>
+            </tr>{% endfor %}
+        </tbody>
+    </table>
+</div>{% endblock %}
