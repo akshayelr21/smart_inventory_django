@@ -1,37 +1,126 @@
-{% extends "base.html" %}{% block title %}Reports{% endblock %}{% block content %}<h2 class="mb-4">Reports</h2>
-<div class="row g-3">
-    <div class="col-md-3">
-        <div class="card stat-card">
-            <div class="card-body">
-                <div class="text-muted">Sales Total</div>
-                <h3>₹{{ sales }}</h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card stat-card">
-            <div class="card-body">
-                <div class="text-muted">Completed / Active Orders</div>
-                <h3>{{ order_count }}</h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card stat-card">
-            <div class="card-body">
-                <div class="text-muted">Current Stock Value</div>
-                <h3>₹{{ stock_value }}</h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card stat-card">
-            <div class="card-body">
-                <div class="text-muted">Low Stock Items</div>
-                <h3>{{ low_stock }}</h3>
-            </div>
-        </div>
-    </div>
+{% extends 'base.html' %}
+
+{% block title %}Reports{% endblock %}
+{% block crumb %}Reports{% endblock %}
+
+{% block content %}
+<style>
+  .page-heading {
+    margin-bottom: 26px;
+  }
+
+  .eyebrow {
+    margin: 0 0 8px;
+    color: #6366f1;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+
+  .page-heading h1 {
+    margin: 0;
+    color: #172033;
+    font-size: 30px;
+    letter-spacing: -0.03em;
+  }
+
+  .muted {
+    margin: 8px 0 0;
+    color: #64748b;
+    font-size: 14px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .stat-card {
+    display: flex;
+    min-height: 165px;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px;
+    border: 1px solid #e8edf4;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 4px 14px rgb(30 41 59 / 4%);
+  }
+
+  .stat-label {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .stat-card strong {
+    margin: 12px 0 8px;
+    color: #172033;
+    font-size: 27px;
+    letter-spacing: -0.03em;
+  }
+
+  .stat-card small {
+    margin-top: auto;
+    color: #94a3b8;
+    font-size: 12px;
+  }
+
+  @media (max-width: 1000px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .page-heading h1 {
+      font-size: 26px;
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .stat-card {
+      min-height: 145px;
+      padding: 18px;
+    }
+  }
+</style>
+
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">BUSINESS SUMMARY</p>
+    <h1>Reports</h1>
+    <p class="muted">A snapshot of sales and inventory health.</p>
+  </div>
 </div>
-<p class="text-muted mt-4">Sales total is calculated from non-cancelled orders. Stock value is current product price
-    multiplied by current quantity.</p>{% endblock %}
+
+<div class="stats-grid report-grid">
+  <article class="stat-card">
+    <span class="stat-label">Net sales</span>
+    <strong>₹{{ sales|floatformat:2 }}</strong>
+    <small>Excludes cancelled orders</small>
+  </article>
+
+  <article class="stat-card">
+    <span class="stat-label">Orders counted</span>
+    <strong>{{ order_count }}</strong>
+    <small>All non-cancelled orders</small>
+  </article>
+
+  <article class="stat-card">
+    <span class="stat-label">Current stock value</span>
+    <strong>₹{{ stock_value|floatformat:2 }}</strong>
+    <small>Quantity × product price</small>
+  </article>
+
+  <article class="stat-card">
+    <span class="stat-label">Low stock items</span>
+    <strong>{{ low_stock }}</strong>
+    <small>At or below reorder level</small>
+  </article>
+</div>
+{% endblock %}

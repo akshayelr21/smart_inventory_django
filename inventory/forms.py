@@ -19,6 +19,11 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = ["name", "sku", "category", "description", "price", "quantity", "reorder_level"]
 
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ["name", "description"]
+
 class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer

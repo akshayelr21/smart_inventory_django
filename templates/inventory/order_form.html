@@ -1,67 +1,212 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+
+{% block title %}New order{% endblock %}
+{% block crumb %}Orders / New order{% endblock %}
 
 {% block content %}
-<div class="card form-card">
-    <div class="card-body p-4">
-        <h2>Create Order</h2>
+<style>
+  .page-heading {
+    margin-bottom: 22px;
+  }
 
-        {% if not customers %}
-            <div class="alert alert-warning">
-                Add a customer before creating an order.
-            </div>
-        {% endif %}
+  .eyebrow {
+    margin: 0 0 8px;
+    color: #6366f1;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
 
-        {% if not products %}
-            <div class="alert alert-warning">
-                Add a product before creating an order.
-            </div>
-        {% endif %}
+  .page-heading h1 {
+    margin: 0;
+    color: #172033;
+    font-size: 30px;
+    letter-spacing: -0.03em;
+  }
 
-        <form method="post">
-            {% csrf_token %}
+  .muted {
+    margin: 8px 0 0;
+    color: #64748b;
+    font-size: 14px;
+  }
 
-            <div class="mb-3">
-                <label class="form-label" for="customer">Customer</label>
-                <select class="form-select" id="customer" name="customer" required>
-                    {% for c in customers %}
-                        <option value="{{ c.pk }}">{{ c.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+  .panel {
+    width: min(100%, 760px);
+    padding: 26px;
+    border: 1px solid #e8edf4;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 4px 14px rgb(30 41 59 / 4%);
+  }
 
-            <div class="mb-3">
-                <label class="form-label" for="product">Product</label>
-                <select class="form-select" id="product" name="product" required>
-                    {% for p in products %}
-                        <option value="{{ p.pk }}">
-                            {{ p.name }} — ₹{{ p.price }} ({{ p.quantity }} available)
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
+  .field {
+    margin-bottom: 19px;
+  }
 
-            <div class="mb-3">
-                <label class="form-label" for="quantity">Quantity</label>
-                <input
-                    class="form-control"
-                    id="quantity"
-                    type="number"
-                    min="1"
-                    name="quantity"
-                    required
-                >
-            </div>
+  .field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 600;
+  }
 
-            <button
-                class="btn btn-primary"
-                type="submit"
-                {% if not customers or not products %}disabled{% endif %}
-            >
-                Create Order
-            </button>
+  .required {
+    margin-left: 4px;
+    color: #dc2626;
+  }
 
-            <a class="btn btn-secondary" href="{% url 'orders' %}">Cancel</a>
-        </form>
-    </div>
+  .field input,
+  .field select {
+    display: block;
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    color: #1e293b;
+    background: #fff;
+    font: inherit;
+    font-size: 14px;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .field input:focus,
+  .field select:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgb(99 102 241 / 14%);
+  }
+
+  .field-error {
+    display: block;
+    margin-top: 8px;
+    color: #b91c1c;
+    font-size: 13px;
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1px solid #eef2f7;
+  }
+
+  .button {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .button.primary {
+    color: #fff;
+    background: #6366f1;
+  }
+
+  .button.primary:hover {
+    background: #4f46e5;
+  }
+
+  .button.secondary {
+    border-color: #cbd5e1;
+    color: #334155;
+    background: #fff;
+  }
+
+  .button.secondary:hover {
+    background: #f8fafc;
+  }
+
+  @media (max-width: 600px) {
+    .page-heading h1 {
+      font-size: 26px;
+    }
+
+    .panel {
+      padding: 20px 16px;
+    }
+
+    .form-actions {
+      flex-direction: column-reverse;
+    }
+
+    .form-actions .button {
+      width: 100%;
+    }
+  }
+</style>
+
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">SALES</p>
+    <h1>Create an order</h1>
+    <p class="muted">Choose a customer and product. Available stock is checked before saving.</p>
+  </div>
 </div>
+
+<section class="panel form-panel">
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="field">
+      <label for="customer">Customer <span class="required">*</span></label>
+      <select id="customer" name="customer" required>
+        <option value="">Choose a customer</option>
+        {% for c in customers %}
+          <option value="{{ c.pk }}" {% if request.POST.customer == c.pk|stringformat:'s' %}selected{% endif %}>
+            {{ c.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="product">Product <span class="required">*</span></label>
+      <select id="product" name="product" required>
+        <option value="">Choose a product</option>
+        {% for p in products %}
+          <option value="{{ p.pk }}" {% if request.POST.product == p.pk|stringformat:'s' %}selected{% endif %}>
+            {{ p.name }} · {{ p.quantity }} in stock · ₹{{ p.price|floatformat:2 }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="quantity">Quantity <span class="required">*</span></label>
+      <input
+        id="quantity"
+        type="number"
+        name="quantity"
+        min="1"
+        value="{{ request.POST.quantity|default:'1' }}"
+        required
+      >
+    </div>
+
+    <div class="form-actions">
+      <a class="button secondary" href="{% url 'orders' %}">Cancel</a>
+      <button class="button primary" type="submit">Create order</button>
+    </div>
+
+    {% if not customers %}
+      <p class="field-error">Add a customer before creating an order.</p>
+    {% endif %}
+
+    {% if not products %}
+      <p class="field-error">Add a product before creating an order.</p>
+    {% endif %}
+  </form>
+</section>
 {% endblock %}

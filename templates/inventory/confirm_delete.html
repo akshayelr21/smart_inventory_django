@@ -1,8 +1,120 @@
-{% extends "base.html" %}{% block content %}<div class="card form-card">
-    <div class="card-body p-4">
-        <h3>Confirm delete</h3>
-        <p>Are you sure you want to delete <strong>{{ object }}</strong>?</p>
-        <form method="post">{% csrf_token %}<button class="btn btn-danger">Delete</button> <a class="btn btn-secondary"
-                href="javascript:history.back()">Cancel</a></form>
-    </div>
-</div>{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}Delete record{% endblock %}
+
+{% block content %}
+<style>
+  .confirm-panel {
+    width: min(100%, 520px);
+    margin: 56px auto;
+    padding: 36px;
+    border: 1px solid #e8edf4;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 12px 32px rgb(30 41 59 / 7%);
+    text-align: center;
+  }
+
+  .stat-icon {
+    display: grid;
+    width: 52px;
+    height: 52px;
+    place-items: center;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .stat-icon.red {
+    color: #b91c1c;
+    background: #fee2e2;
+  }
+
+  .confirm-panel h1 {
+    margin: 0;
+    color: #172033;
+    font-size: 24px;
+  }
+
+  .muted {
+    margin: 12px 0 26px;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .muted strong {
+    color: #334155;
+  }
+
+  .confirm-panel form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .button {
+    display: inline-flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .button.secondary {
+    border-color: #cbd5e1;
+    color: #334155;
+    background: #fff;
+  }
+
+  .button.secondary:hover {
+    background: #f8fafc;
+  }
+
+  .button.destructive {
+    color: #fff;
+    background: #dc2626;
+  }
+
+  .button.destructive:hover {
+    background: #b91c1c;
+  }
+
+  @media (max-width: 480px) {
+    .confirm-panel {
+      margin: 24px auto;
+      padding: 28px 20px;
+    }
+
+    .confirm-panel form {
+      flex-direction: column-reverse;
+    }
+
+    .confirm-panel .button {
+      width: 100%;
+    }
+  }
+</style>
+
+<section class="panel confirm-panel">
+  <span class="stat-icon red">!</span>
+  <h1>Delete this record?</h1>
+  <p class="muted">
+    You’re about to delete <strong>{{ object }}</strong>. This action cannot be undone.
+  </p>
+
+  <form method="post">
+    {% csrf_token %}
+    <a class="button secondary" href="javascript:history.back()">Cancel</a>
+    <button class="button destructive" type="submit">Delete permanently</button>
+  </form>
+</section>
+{% endblock %}

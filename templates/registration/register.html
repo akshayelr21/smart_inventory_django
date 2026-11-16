@@ -1,36 +1,230 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Create account{% endblock %}
 
 {% block content %}
-<div class="auth-card card shadow-sm mx-auto">
-    <div class="card-body p-4">
-        <h2 class="text-center">Create Staff Account</h2>
-        <p class="text-muted text-center">Register to use the inventory system</p>
+<style>
+  .auth-wrap {
+    display: grid;
+    min-height: calc(100vh - 140px);
+    place-items: center;
+    padding: 32px 16px;
+  }
 
-        <form method="post">
-            {% csrf_token %}
+  .auth-card {
+    width: 100%;
+    max-width: 460px;
+    padding: 36px;
+    border: 1px solid #e8edf4;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 16px 40px rgb(30 41 59 / 8%);
+  }
 
-            {% for field in form %}
-                <div class="mb-3">
-                    <label class="form-label" for="{{ field.id_for_label }}">
-                        {{ field.label }}
-                    </label>
+  .auth-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    color: #1e293b;
+    font-size: 16px;
+    font-weight: 700;
+  }
 
-                    {{ field }}
+  .auth-brand .brand-mark {
+    display: grid;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    border-radius: 12px;
+    color: #fff;
+    background: #6366f1;
+    font-size: 20px;
+  }
 
-                    {% for error in field.errors %}
-                        <div class="text-danger small">{{ error }}</div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
+  .auth-brand small {
+    display: block;
+    margin-top: 4px;
+    color: #94a3b8;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+  }
 
-            <button type="submit" class="btn btn-primary w-100">Register</button>
-        </form>
+  .eyebrow {
+    margin: 0 0 10px;
+    color: #6366f1;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
 
-        <p class="text-center mt-3">
-            Already registered? <a href="{% url 'login' %}">Login</a>
-        </p>
-    </div>
+  .auth-card h1 {
+    margin: 0;
+    color: #172033;
+    font-size: 26px;
+    letter-spacing: -0.03em;
+  }
+
+  .muted {
+    margin: 9px 0 26px;
+    color: #64748b;
+    font-size: 14px;
+  }
+
+  .field {
+    margin-bottom: 18px;
+  }
+
+  .field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    background: #fff;
+    color: #1e293b;
+    font: inherit;
+    font-size: 14px;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgb(99 102 241 / 15%);
+  }
+
+  .help-text {
+    display: block;
+    margin-top: 6px;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .help-text ul {
+    margin: 6px 0 0;
+    padding-left: 18px;
+  }
+
+  .field-error {
+    display: block;
+    margin-top: 6px;
+    color: #b91c1c;
+    font-size: 12px;
+  }
+
+  .button {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 8px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .button.primary {
+    color: #fff;
+    background: #6366f1;
+    transition: background 150ms ease, transform 150ms ease;
+  }
+
+  .button.primary:hover {
+    transform: translateY(-1px);
+    background: #4f46e5;
+  }
+
+  .full-width {
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .auth-foot {
+    margin: 24px 0 0;
+    color: #64748b;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .auth-foot a {
+    color: #4f46e5;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .auth-foot a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 520px) {
+    .auth-card {
+      padding: 26px 20px;
+    }
+
+    .auth-card h1 {
+      font-size: 23px;
+    }
+  }
+</style>
+
+<div class="auth-wrap">
+  <section class="panel auth-card">
+    <a class="brand auth-brand" href="{% url 'login' %}">
+      <span class="brand-mark">S</span>
+      <span>
+        Stockroom
+        <small>INVENTORY MANAGEMENT</small>
+      </span>
+    </a>
+
+    <p class="eyebrow">TEAM ACCESS</p>
+    <h1>Create a staff account</h1>
+    <p class="muted">Add your details to get started.</p>
+
+    <form method="post">
+      {% csrf_token %}
+
+      {% for field in form %}
+        <div class="field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+
+          {% if field.help_text %}
+            <small class="help-text">{{ field.help_text|safe }}</small>
+          {% endif %}
+
+          {% for error in field.errors %}
+            <small class="field-error">{{ error }}</small>
+          {% endfor %}
+        </div>
+      {% endfor %}
+
+      <button class="button primary full-width" type="submit">Create account</button>
+    </form>
+
+    <p class="auth-foot">
+      Already registered?
+      <a href="{% url 'login' %}">Sign in</a>
+    </p>
+  </section>
 </div>
 {% endblock %}

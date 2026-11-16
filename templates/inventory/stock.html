@@ -1,49 +1,365 @@
-{% extends "base.html" %}{% block title %}Inventory{% endblock %}{% block content %}
-<h2 class="mb-3">Inventory Management</h2>
-<div class="row g-3">
-    <div class="col-lg-4">
-        <div class="card">
-            <div class="card-body">
-                <h5>Update Stock</h5>
-                <form method="post">{% csrf_token %}{% for field in form %}<div class="mb-3"><label
-                            class="form-label">{{ field.label }}</label>{{ field }}{% for e in field.errors %}<div
-                            class="text-danger small">{{ e }}</div>{% endfor %}</div>{% endfor %}<button
-                        class="btn btn-primary">Save Movement</button></form>
-            </div>
-        </div>
+{% extends 'base.html' %}
+
+{% block title %}Stock movements{% endblock %}
+{% block crumb %}Stock movements{% endblock %}
+
+{% block content %}
+<style>
+  .page-heading {
+    margin-bottom: 24px;
+  }
+
+  .eyebrow {
+    margin: 0 0 8px;
+    color: #6366f1;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+
+  .page-heading h1 {
+    margin: 0;
+    color: #172033;
+    font-size: 30px;
+    letter-spacing: -0.03em;
+  }
+
+  .muted {
+    margin: 8px 0 0;
+    color: #64748b;
+    font-size: 14px;
+  }
+
+  .two-column {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 18px;
+  }
+
+  .panel {
+    overflow: hidden;
+    border: 1px solid #e8edf4;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 4px 14px rgb(30 41 59 / 4%);
+  }
+
+  .panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid #eef2f7;
+  }
+
+  .panel-heading h2 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 15px;
+  }
+
+  .panel-heading p {
+    margin: 5px 0 0;
+    color: #94a3b8;
+    font-size: 12px;
+  }
+
+  .padded-form {
+    padding: 20px;
+  }
+
+  .field {
+    margin-bottom: 17px;
+  }
+
+  .field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    display: block;
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    color: #1e293b;
+    background: #fff;
+    font: inherit;
+    font-size: 14px;
+  }
+
+  .field textarea {
+    min-height: 88px;
+    resize: vertical;
+  }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgb(99 102 241 / 14%);
+  }
+
+  .field-error {
+    display: block;
+    margin-top: 6px;
+    color: #b91c1c;
+    font-size: 12px;
+  }
+
+  .button {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 15px;
+    border: 0;
+    border-radius: 8px;
+    color: #fff;
+    background: #6366f1;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .button:hover {
+    background: #4f46e5;
+  }
+
+  .list-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eef2f7;
+  }
+
+  .list-row:last-child {
+    border-bottom: 0;
+  }
+
+  .list-row b {
+    display: block;
+    color: #1e293b;
+    font-size: 13px;
+  }
+
+  .list-row small {
+    display: block;
+    margin-top: 4px;
+    color: #94a3b8;
+    font-size: 11px;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .badge.warning {
+    color: #92400e;
+    background: #fef3c7;
+  }
+
+  .badge.success {
+    color: #166534;
+    background: #dcfce7;
+  }
+
+  .badge.neutral {
+    color: #475569;
+    background: #e2e8f0;
+  }
+
+  .section-gap {
+    margin-top: 20px;
+  }
+
+  .table-wrap {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  th,
+  td {
+    padding: 13px 16px;
+    border-bottom: 1px solid #eef2f7;
+    font-size: 12px;
+  }
+
+  th {
+    color: #64748b;
+    background: #f8fafc;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  td {
+    color: #475569;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .strong {
+    color: #1e293b;
+    font-weight: 600;
+  }
+
+  .empty-state {
+    padding: 32px 20px;
+    color: #64748b;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .two-column {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .page-heading h1 {
+      font-size: 26px;
+    }
+
+    .panel-heading,
+    .padded-form {
+      padding: 16px;
+    }
+
+    th,
+    td {
+      padding: 11px 12px;
+    }
+  }
+</style>
+
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">INVENTORY CONTROL</p>
+    <h1>Stock movements</h1>
+    <p class="muted">Record incoming stock or adjust quantities after use or damage.</p>
+  </div>
+</div>
+
+<div class="two-column stock-columns">
+  <section class="panel">
+    <div class="panel-heading">
+      <div>
+        <h2>Adjust stock</h2>
+        <p>Changes are recorded in the movement history.</p>
+      </div>
     </div>
-    <div class="col-lg-8">
-        <div class="card mb-3">
-            <div class="card-header">Low Stock Products</div>
-            <div class="card-body">{% for p in low_stock %}<div class="d-flex justify-content-between py-1"><span>{{
-                        p.name }}</span><span class="badge bg-danger">{{ p.quantity }} / reorder {{ p.reorder_level
-                        }}</span></div>{% empty %}<p class="mb-0">All products are sufficiently stocked.</p>{% endfor %}
-            </div>
+
+    <form method="post" class="padded-form" novalidate>
+      {% csrf_token %}
+
+      {% for field in form %}
+        <div class="field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+
+          {% for error in field.errors %}
+            <small class="field-error">{{ error }}</small>
+          {% endfor %}
         </div>
-        <div class="card">
-            <div class="card-header">Recent Stock Movements</div>
-            <div class="table-responsive">
-                <table class="table mb-0">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Product</th>
-                            <th>Type</th>
-                            <th>Qty</th>
-                            <th>Note</th>
-                        </tr>
-                    </thead>
-                    <tbody>{% for m in movements %}<tr>
-                            <td>{{ m.created_at|date:"d M Y H:i" }}</td>
-                            <td>{{ m.product.name }}</td>
-                            <td>{{ m.get_movement_type_display }}</td>
-                            <td>{{ m.quantity }}</td>
-                            <td>{{ m.note }}</td>
-                        </tr>{% empty %}<tr>
-                            <td colspan="5">No movements yet.</td>
-                        </tr>{% endfor %}</tbody>
-                </table>
-            </div>
-        </div>
+      {% endfor %}
+
+      <button class="button" type="submit">Save movement</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="panel-heading">
+      <div>
+        <h2>Needs attention</h2>
+        <p>Products at or below reorder level</p>
+      </div>
     </div>
-</div>{% endblock %}
+
+    {% for p in low_stock %}
+      <div class="list-row">
+        <span>
+          <b>{{ p.name }}</b>
+          <small>{{ p.sku }}</small>
+        </span>
+        <span class="badge warning">{{ p.quantity }} left</span>
+      </div>
+    {% empty %}
+      <div class="empty-state">No products need replenishing.</div>
+    {% endfor %}
+  </section>
+</div>
+
+<section class="panel section-gap">
+  <div class="panel-heading">
+    <div>
+      <h2>Recent movements</h2>
+      <p>Last 30 stock updates</p>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Product</th>
+          <th>Type</th>
+          <th>Quantity</th>
+          <th>Note</th>
+          <th>By</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for m in movements %}
+          <tr>
+            <td>{{ m.created_at|date:'d M Y, H:i' }}</td>
+            <td class="strong">{{ m.product.name }}</td>
+            <td>
+              <span class="badge {% if m.movement_type == 'IN' %}success{% else %}neutral{% endif %}">
+                {{ m.get_movement_type_display }}
+              </span>
+            </td>
+            <td>{{ m.quantity }}</td>
+            <td>{{ m.note|default:'—' }}</td>
+            <td>{{ m.created_by|default:'—' }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="6" class="empty-state">No stock movements recorded.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

@@ -4,10 +4,10 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.db import transaction
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Count
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
-from .forms import RegisterForm, ProductForm, CustomerForm, StockMovementForm
+from .forms import RegisterForm, ProductForm, CategoryForm, CustomerForm, StockMovementForm
 from .models import Product, Category, Customer, Order, OrderItem, StockMovement
 
 def register_view(request):
@@ -72,6 +72,42 @@ def product_delete(request, pk):
     obj = get_object_or_404(Product, pk=pk)
     if request.method == "POST":
         obj.delete(); messages.success(request, "Product deleted."); return redirect("products")
+    return render(request, "inventory/confirm_delete.html", {"object": obj})
+
+@login_required
+def category_list(request):
+    q = request.GET.get("q", "").strip()
+    categories = Category.objects.annotate(product_count=Count("product")).order_by("name")
+    if q:
+        categories = categories.filter(name__icontains=q)
+    return render(request, "inventory/categories.html", {"categories": categories, "q": q})
+
+@login_required
+def category_create(request):
+    form = CategoryForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Category added.")
+        return redirect("categories")
+    return render(request, "inventory/form.html", {"form": form, "title": "Add Category"})
+
+@login_required
+def category_edit(request, pk):
+    obj = get_object_or_404(Category, pk=pk)
+    form = CategoryForm(request.POST or None, instance=obj)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Category updated.")
+        return redirect("categories")
+    return render(request, "inventory/form.html", {"form": form, "title": "Edit Category"})
+
+@login_required
+def category_delete(request, pk):
+    obj = get_object_or_404(Category, pk=pk)
+    if request.method == "POST":
+        obj.delete()
+        messages.success(request, "Category deleted. Its products were kept without a category.")
+        return redirect("categories")
     return render(request, "inventory/confirm_delete.html", {"object": obj})
 
 @login_required

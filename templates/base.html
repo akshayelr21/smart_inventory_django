@@ -2,422 +2,296 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Smart Inventory{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Stockroom{% endblock %} · Stockroom</title>
 
-    <style>
-        :root {
-            --sidebar-width: 256px;
-            --sidebar-collapsed-width: 76px;
-            --sidebar-bg: #111827;
-            --sidebar-text: #aeb9cb;
-            --sidebar-muted: #738198;
-            --sidebar-accent: #8b9cff;
-        }
+  <style>
+    :root {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      color: #1e293b;
+      background: #f5f7fb;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      --sidebar: #172033;
+      --muted: #94a3b8;
+      --accent: #6366f1;
+    }
 
-        body {
-            min-height: 100vh;
-            margin: 0;
-            background: #f5f7fb;
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        .side-slider {
-            position: fixed;
-            inset: 0 auto 0 0;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
-            width: var(--sidebar-width);
-            padding: 28px 16px 18px;
-            background: var(--sidebar-bg);
-            color: var(--sidebar-text);
-            font: 14px/1.4 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-            transition: width .25s ease, transform .25s ease;
-        }
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+    }
 
-        .side-slider *,
-        .side-slider *::before,
-        .side-slider *::after {
-            box-sizing: border-box;
-        }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-        .side-slider__toggle {
-            position: absolute;
-            top: 28px;
-            right: -14px;
-            z-index: 1001;
-            display: grid;
-            place-items: center;
-            width: 29px;
-            height: 29px;
-            padding: 0;
-            border: 1px solid #303b4f;
-            border-radius: 50%;
-            background: #1b2535;
-            color: #fff;
-            cursor: pointer;
-        }
+    button {
+      font: inherit;
+    }
 
-        .side-slider__brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-height: 34px;
-            margin: 0 0 40px 6px;
-            color: #f3f5fa;
-            text-decoration: none;
-            white-space: nowrap;
-        }
+    .app-shell {
+      min-height: 100vh;
+    }
 
-        .side-slider__brand-mark {
-            display: grid;
-            flex: 0 0 32px;
-            place-items: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 10px;
-            background: #7c8df4;
-            color: white;
-            font-weight: 750;
-        }
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      display: flex;
+      flex-direction: column;
+      width: 250px;
+      padding: 28px 18px 18px;
+      color: #e2e8f0;
+      background: var(--sidebar);
+    }
 
-        .side-slider__brand-name {
-            font-size: 12px;
-            font-weight: 750;
-            letter-spacing: .16em;
-        }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 8px 42px;
+      font-size: 16px;
+      font-weight: 700;
+    }
 
-        .side-slider__eyebrow {
-            margin: 0 0 12px 12px;
-            color: var(--sidebar-muted);
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: .16em;
-        }
+    .brand-mark {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border-radius: 12px;
+      color: white;
+      background: var(--accent);
+      font-size: 20px;
+    }
 
-        .side-slider__nav {
-            display: grid;
-            gap: 5px;
-        }
+    .brand small,
+    .user-chip small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+    }
 
-        .side-slider__link {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 13px;
-            min-height: 46px;
-            padding: 0 12px;
-            border-radius: 9px;
-            color: var(--sidebar-text);
-            text-decoration: none;
-            white-space: nowrap;
-        }
+    .nav-label {
+      margin: 0 10px 12px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+    }
 
-        .side-slider__link:hover,
-        .side-slider__link.is-active {
-            background: #202b40;
-            color: #fff;
-        }
+    nav {
+      display: grid;
+      gap: 6px;
+    }
 
-        .side-slider__icon {
-            flex: 0 0 19px;
-            width: 19px;
-            height: 19px;
-            fill: none;
-            stroke: currentColor;
-            stroke-width: 1.7;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
+    nav a {
+      padding: 12px 13px;
+      border-radius: 9px;
+      color: #cbd5e1;
+      font-size: 14px;
+      transition: background 150ms ease, color 150ms ease;
+    }
 
-        .side-slider__active-dot {
-            position: absolute;
-            right: 12px;
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: var(--sidebar-accent);
-        }
+    nav a:hover,
+    nav a.active {
+      color: white;
+      background: #29354c;
+    }
 
-        .side-slider__footer {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            margin-top: auto;
-            padding: 14px 9px 2px;
-            border-top: 1px solid #263144;
-            color: var(--sidebar-muted);
-            font-size: 11px;
-            white-space: nowrap;
-        }
+    nav a.active {
+      box-shadow: inset 3px 0 var(--accent);
+    }
 
-        .side-slider__status {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: #5fd6a0;
-        }
+    .sidebar-bottom {
+      margin-top: auto;
+    }
 
-        .app-main {
-            min-width: 0;
-            min-height: 100vh;
-            margin-left: var(--sidebar-width);
-            padding: 24px;
-            transition: margin-left .25s ease;
-        }
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 14px 8px;
+      border-top: 1px solid #334155;
+      font-size: 13px;
+      font-weight: 600;
+    }
 
-        body.sidebar-collapsed .side-slider {
-            width: var(--sidebar-collapsed-width);
-            padding-right: 12px;
-            padding-left: 12px;
-        }
+    .avatar {
+      display: grid;
+      flex: 0 0 36px;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border-radius: 50%;
+      color: white;
+      background: #475569;
+    }
 
-        body.sidebar-collapsed .app-main {
-            margin-left: var(--sidebar-collapsed-width);
-        }
+    .logout {
+      width: 100%;
+      padding: 10px;
+      border: 0;
+      border-radius: 8px;
+      color: #cbd5e1;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
 
-        body.sidebar-collapsed .side-slider__brand {
-            margin-left: 10px;
-        }
+    .logout:hover {
+      color: white;
+      background: #29354c;
+    }
 
-        body.sidebar-collapsed .side-slider__brand-name,
-        body.sidebar-collapsed .side-slider__eyebrow,
-        body.sidebar-collapsed .side-slider__link-label,
-        body.sidebar-collapsed .side-slider__footer-label {
-            display: none;
-        }
+    .main-area {
+      min-height: 100vh;
+      margin-left: 250px;
+    }
 
-        body.sidebar-collapsed .side-slider__link {
-            justify-content: center;
-            padding-right: 0;
-            padding-left: 0;
-        }
+    .topbar {
+      display: flex;
+      min-height: 68px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 36px;
+      border-bottom: 1px solid #e8edf4;
+      background: #fff;
+      color: #64748b;
+      font-size: 13px;
+    }
 
-        body.sidebar-collapsed .side-slider__active-dot {
-            right: 7px;
-        }
+    .topbar b {
+      color: #1e293b;
+    }
 
-        body.sidebar-collapsed .side-slider__footer {
-            justify-content: center;
-            padding-right: 0;
-            padding-left: 0;
-        }
+    .today {
+      color: #64748b;
+    }
 
-        @media (max-width: 640px) {
-            .side-slider {
-                width: var(--sidebar-width);
-                transform: translateX(-100%);
-            }
+    .page-content {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 32px 36px;
+    }
 
-            .side-slider.is-open {
-                transform: translateX(0);
-            }
+    .flash {
+      margin-bottom: 18px;
+      padding: 13px 16px;
+      border: 1px solid #bbf7d0;
+      border-radius: 9px;
+      color: #166534;
+      background: #f0fdf4;
+      font-size: 14px;
+    }
 
-            .side-slider__toggle {
-                top: 20px;
-                right: -44px;
-                width: 36px;
-                height: 36px;
-                border-radius: 8px;
-            }
+    .flash.error {
+      border-color: #fecaca;
+      color: #991b1b;
+      background: #fef2f2;
+    }
 
-            .side-slider.is-open .side-slider__toggle {
-                right: 12px;
-            }
+    @media (max-width: 760px) {
+      .sidebar {
+        position: static;
+        width: 100%;
+        padding: 16px;
+      }
 
-            .app-main,
-            body.sidebar-collapsed .app-main {
-                margin-left: 0;
-                padding: 20px 16px;
-            }
+      .brand {
+        margin: 0 4px 20px;
+      }
 
-            body.sidebar-collapsed .side-slider {
-                width: var(--sidebar-width);
-                padding: 28px 16px 18px;
-            }
+      nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
 
-            body.sidebar-collapsed .side-slider__brand {
-                margin-left: 6px;
-            }
+      .sidebar-bottom {
+        margin-top: 18px;
+      }
 
-            body.sidebar-collapsed .side-slider__brand-name,
-            body.sidebar-collapsed .side-slider__eyebrow,
-            body.sidebar-collapsed .side-slider__link-label,
-            body.sidebar-collapsed .side-slider__footer-label {
-                display: initial;
-            }
+      .main-area {
+        margin-left: 0;
+      }
 
-            body.sidebar-collapsed .side-slider__link {
-                justify-content: flex-start;
-                padding-right: 12px;
-                padding-left: 12px;
-            }
+      .topbar {
+        min-height: 56px;
+        padding: 0 18px;
+      }
 
-            body.sidebar-collapsed .side-slider__active-dot {
-                right: 12px;
-            }
-
-            body.sidebar-collapsed .side-slider__footer {
-                justify-content: flex-start;
-                padding-right: 9px;
-                padding-left: 9px;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .side-slider,
-            .app-main {
-                transition: none;
-            }
-        }
-    </style>
+      .page-content {
+        padding: 22px 18px;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="app-shell">
     {% if request.user.is_authenticated %}
-        <aside class="side-slider" id="side-slider" aria-label="Main navigation">
-            <button
-                class="side-slider__toggle"
-                type="button"
-                aria-label="Collapse navigation"
-                aria-expanded="true"
-                aria-controls="side-slider"
-            >‹</button>
+      <aside class="sidebar">
+        <a class="brand" href="{% url 'dashboard' %}">
+          <span class="brand-mark">S</span>
+          <span>
+            Stockroom
+            <small>INVENTORY MANAGEMENT</small>
+          </span>
+        </a>
 
-            <a class="side-slider__brand" href="{% url 'dashboard' %}">
-                <span class="side-slider__brand-mark" aria-hidden="true">S</span>
-                <span class="side-slider__brand-name">SMART INVENTORY</span>
-            </a>
+        <div class="nav-label">WORKSPACE</div>
+        <nav>
+          <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">▦ &nbsp; Overview</a>
+          <a href="{% url 'products' %}">▤ &nbsp; Products</a>
+          <a href="{% url 'categories' %}">◫ &nbsp; Categories</a>
+          <a href="{% url 'inventory' %}">↕ &nbsp; Stock movements</a>
+          <a href="{% url 'customers' %}">♧ &nbsp; Customers</a>
+          <a href="{% url 'orders' %}">▣ &nbsp; Orders</a>
+          <a href="{% url 'reports' %}">▥ &nbsp; Reports</a>
+        </nav>
 
-            <span class="side-slider__eyebrow">WORKSPACE</span>
+        <div class="sidebar-bottom">
+          <div class="user-chip">
+            <span class="avatar">{{ request.user.username|slice:':1'|upper }}</span>
+            <span>
+              {{ request.user.get_full_name|default:request.user.username }}
+              <small>Team member</small>
+            </span>
+          </div>
 
-            <nav class="side-slider__nav">
-                <a class="side-slider__link" href="{% url 'dashboard' %}" title="Dashboard">
-                    <svg class="side-slider__icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/>
-                        <rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/>
-                        <rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/>
-                        <rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>
-                    </svg>
-                    <span class="side-slider__link-label">Dashboard</span>
-                    <span class="side-slider__active-dot" aria-hidden="true"></span>
-                </a>
-
-                <a class="side-slider__link" href="{% url 'products' %}" title="Products">
-                    <svg class="side-slider__icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="m12 3 8.5 4.5v9L12 21l-8.5-4.5v-9L12 3Z"/>
-                        <path d="m3.8 7.7 8.2 4.5 8.2-4.5M12 12.2V21"/>
-                    </svg>
-                    <span class="side-slider__link-label">Products</span>
-                </a>
-
-                <a class="side-slider__link" href="{% url 'inventory' %}" title="Inventory">
-                    <svg class="side-slider__icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z"/>
-                        <path d="M4.2 7.6 12 12l7.8-4.4M12 12v9"/>
-                    </svg>
-                    <span class="side-slider__link-label">Inventory</span>
-                </a>
-
-                <a class="side-slider__link" href="{% url 'customers' %}" title="Customers">
-                    <svg class="side-slider__icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <circle cx="9" cy="8" r="3.5"/>
-                        <path d="M2.8 20a6.2 6.2 0 0 1 12.4 0M16 5a3.5 3.5 0 0 1 0 6.8M17.2 14a5.6 5.6 0 0 1 4 6"/>
-                    </svg>
-                    <span class="side-slider__link-label">Customers</span>
-                </a>
-
-                <a class="side-slider__link" href="{% url 'orders' %}" title="Orders">
-                    <svg class="side-slider__icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M5 4h14v17l-2.3-1.5L14.5 21 12 19.5 9.5 21l-2.2-1.5L5 21V4Z"/>
-                        <path d="M8.5 9h7M8.5 13h7M8.5 17h3"/>
-                    </svg>
-                    <span class="side-slider__link-label">Orders</span>
-                </a>
-
-                <a class="side-slider__link" href="{% url 'reports' %}" title="Reports">
-                    <svg class="side-slider__icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M4 20V11M10 20V5M16 20v-7M22 20H2"/>
-                    </svg>
-                    <span class="side-slider__link-label">Reports</span>
-                </a>
-            </nav>
-
-            <div class="side-slider__footer">
-                <span class="side-slider__status" aria-hidden="true"></span>
-                <span class="side-slider__footer-label">{{ request.user.username }}</span>
-                <form method="post" action="{% url 'logout' %}" class="ms-auto">
-                    {% csrf_token %}
-                    <button class="btn btn-sm btn-outline-light" type="submit">Logout</button>
-                </form>
-            </div>
-        </aside>
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="logout" type="submit">Sign out</button>
+          </form>
+        </div>
+      </aside>
     {% endif %}
 
-    <main class="app-main">
+    <main class="main-area">
+      {% if request.user.is_authenticated %}
+        <header class="topbar">
+          <span>Inventory / <b>{% block crumb %}Overview{% endblock %}</b></span>
+          <span class="today">{% now 'D, d M Y' %}</span>
+        </header>
+      {% endif %}
+
+      <section class="page-content">
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+          <div class="flash {{ message.tags }}">{{ message }}</div>
         {% endfor %}
-
         {% block content %}{% endblock %}
+      </section>
     </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        (() => {
-            const sidebar = document.getElementById("side-slider");
-            if (!sidebar) return;
-
-            const toggle = sidebar.querySelector(".side-slider__toggle");
-            const mobile = window.matchMedia("(max-width: 640px)");
-
-            function updateToggle() {
-                const isOpen = mobile.matches
-                    ? sidebar.classList.contains("is-open")
-                    : !document.body.classList.contains("sidebar-collapsed");
-
-                toggle.setAttribute("aria-expanded", String(isOpen));
-                toggle.setAttribute(
-                    "aria-label",
-                    isOpen ? "Collapse navigation" : "Expand navigation"
-                );
-                toggle.textContent = isOpen ? "‹" : "›";
-            }
-
-            toggle.addEventListener("click", () => {
-                if (mobile.matches) {
-                    sidebar.classList.toggle("is-open");
-                } else {
-                    document.body.classList.toggle("sidebar-collapsed");
-                }
-                updateToggle();
-            });
-
-            mobile.addEventListener("change", () => {
-                sidebar.classList.remove("is-open");
-                document.body.classList.remove("sidebar-collapsed");
-                updateToggle();
-            });
-
-            const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
-            sidebar.querySelectorAll(".side-slider__link").forEach(link => {
-                const linkPath = new URL(link.href).pathname.replace(/\/$/, "") || "/";
-                if (linkPath === currentPath) {
-                    link.classList.add("is-active");
-                    link.setAttribute("aria-current", "page");
-                }
-            });
-
-            updateToggle();
-        })();
-    </script>
+  </div>
 </body>
 </html>
